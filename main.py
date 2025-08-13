@@ -49,12 +49,13 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.JOYDEVICEADDED:
-                print("Joystick added:", event.joy)
+                print("Joystick added")
             if event.type == pygame.QUIT:
                 return
             
 
         screen.fill((0, 0, 0))
+        #screen.blit(FONT.render(f"Lives: {PLAYER_LIVES}", True, (255, 255, 255)), (10, 10))
         
         # draw all game objects
         for sprite in drawables:
@@ -67,9 +68,8 @@ def main():
         # Check for collisions
         for asteroid in asteroids:
             if player.collides_with(asteroid):
-                print("Game Over!")
-                pygame.quit()
-                sys.exit()
+                player.damage()
+                asteroid.kill()
 
         for asteroid in asteroids:
             for shot in shoot:
