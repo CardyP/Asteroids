@@ -23,8 +23,6 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()  # Set frame rate to 60 FPS
     dt = 0
-    
-    
     joystick = []
 
     # Create groups for updatable and drawable objects
@@ -52,8 +50,8 @@ def main():
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.JOYDEVICEADDED():
-                print("Joystick added")
+            # if event.type == pygame.JOYDEVICEADDED():
+            #     print("Joystick added")
             if event.type == pygame.QUIT:
                 return
             
