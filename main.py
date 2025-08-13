@@ -14,7 +14,14 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()  # Set frame rate to 60 FPS
     dt = 0
-    joystick = []
+
+    joystick_count = pygame.joystick.get_count()
+    joysticks = []
+    for i in range(joystick_count):
+        joystick = pygame.joystick.Joystick(i)
+        joystick.init()
+        joysticks.append(joystick)
+        print(f"Initialized Joystick {i}: {joystick.get_name()}")
 
     # Create groups for updatable and drawable objects
     updatables = pygame.sprite.Group()
