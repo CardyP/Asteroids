@@ -9,11 +9,22 @@ from shoot import Shot
 
 def main():
     pygame.init()
+    
     pygame.joystick.init()  # Initialize joystick support if needed
+
+    # Debug: Print number of joysticks and their names
+    joystick_count = pygame.joystick.get_count()
+    print(f"Number of joysticks detected: {joystick_count}")
+    for i in range(joystick_count):
+        js = pygame.joystick.Joystick(i)
+        js.init()
+        print(f"Joystick {i}: {js.get_name()}")
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()  # Set frame rate to 60 FPS
     dt = 0
+    
+    
     joystick = []
 
     # Create groups for updatable and drawable objects
@@ -41,8 +52,8 @@ def main():
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.JOYDEVICEADDED:
-                print("Joystick added:", event.joy)
+            if event.type == pygame.JOYDEVICEADDED():
+                print("Joystick added")
             if event.type == pygame.QUIT:
                 return
             
