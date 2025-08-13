@@ -15,13 +15,13 @@ def main():
     clock = pygame.time.Clock()  # Set frame rate to 60 FPS
     dt = 0
 
-    joystick_count = pygame.joystick.get_count()
+    # joystick_count = pygame.joystick.get_count()
     joysticks = []
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-        joysticks.append(joystick)
-        print(f"Initialized Joystick {i}: {joystick.get_name()}")
+    # for i in range(joystick_count):
+    #     joystick = pygame.joystick.Joystick(i)
+    #     joystick.init()
+    #     joysticks.append(joystick)
+    #     print(f"Initialized Joystick {i}: {joystick.get_name()}")
 
     # Create groups for updatable and drawable objects
     updatables = pygame.sprite.Group()
@@ -64,6 +64,7 @@ def main():
         # Update all game objects
         updatables.update(dt)
         player.timer -= dt
+
 
         # Check for collisions
         for asteroid in asteroids:
