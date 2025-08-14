@@ -11,7 +11,7 @@ class Player(CircleShape):
         self.rotation = 0  # Player's rotation angle
         self.timer = 0  # Timer for shooting cooldown
         self.controller = controller
-        
+        self.triple_shot_timer = 0  # Timer for triple shot duration
     # in the player class
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -26,6 +26,15 @@ class Player(CircleShape):
         shot_velocity = forward * constants.PLAYER_SHOOT_SPEED
         return Shot(self.position.x, self.position.y, constants.SHOOT_RADIUS, shot_velocity)
 
+    def triple_shot(self):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        left = pygame.Vector2(0, 1).rotate(self.rotation - 30)
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 30)
+        shot_velocity = forward * constants.PLAYER_SHOOT_SPEED
+        shot_velocity_left = left * constants.PLAYER_SHOOT_SPEED
+        shot_velocity_right = right * constants.PLAYER_SHOOT_SPEED
+        # Draw three shots in a triangular formation
+        return Shot(self.position.x, self.position.y, constants.SHOOT_RADIUS, shot_velocity), Shot(self.position.x + 10, self.position.y + 10, constants.SHOOT_RADIUS, shot_velocity_left), Shot(self.position.x - 10, self.position.y + 10, constants.SHOOT_RADIUS, shot_velocity_right)
     
     def draw(self, screen):
         pygame.draw.polygon(screen, constants.PLAYER_COLOR, self.triangle())    
@@ -43,6 +52,7 @@ class Player(CircleShape):
         constants.PLAYER_COLOR = (255, 255, 255)
         print(f"Lives left: {constants.PLAYER_LIVES}")
         if constants.PLAYER_LIVES <= 0:
+            self.triple_shot_timer = 0
             print("Game Over!")
             time.sleep(2)
             pygame.quit()
@@ -63,9 +73,14 @@ class Player(CircleShape):
         self.position += self.velocity * dt
         self.velocity *= constants.PLAYER_DAMPING  # Apply damping to the velocity
         
+
+        
         if keys[pygame.K_SPACE]:
             if self.timer <= 0:
-                self.shoot()
+                if self.triple_shot_timer > 0:
+                    self.triple_shot()  # Assuming you want to draw the triple shot
+                else:
+                    self.shoot()
                 self.timer = constants.PLAYER_SHOOT_COOLDOWN
 
         if joystick:
@@ -77,7 +92,10 @@ class Player(CircleShape):
                 self.accelerate(axis_y * -dt * constants.PLAYER_ACCELERATION / 300)
             if joystick.get_button(0):
                 if self.timer <= 0:
-                    self.shoot()
+                    if self.triple_shot_timer > 0:
+                        self.triple_shot()  # Assuming you want to draw the triple shot
+                    else:
+                        self.shoot()
                     self.timer = constants.PLAYER_SHOOT_COOLDOWN
 
         if self.position.x < 0:

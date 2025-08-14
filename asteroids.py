@@ -1,7 +1,9 @@
 import pygame
 import random
 from circleshape import CircleShape
+import constants
 from constants import *
+
 
 class Asteroids(CircleShape):
     def __init__(self, x, y, radius):
@@ -13,7 +15,9 @@ class Asteroids(CircleShape):
         self.kill()
 
         if self.radius <= ASTEROID_MIN_RADIUS:
+            constants.ASTEROIDS_DESTROYED += 1
             return "Asteroid too small to split"
+            
 
         # randomize the angle of the split
         random_angle = random.uniform(20, 50)

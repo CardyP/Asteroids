@@ -1,4 +1,5 @@
 import pygame
+import random 
 
 
 SCREEN_WIDTH = 1280
@@ -8,6 +9,7 @@ ASTEROID_MIN_RADIUS = 20
 ASTEROID_KINDS = 3
 ASTEROID_SPAWN_RATE = 0.8  # seconds
 ASTEROID_MAX_RADIUS = ASTEROID_MIN_RADIUS * ASTEROID_KINDS
+ASTEROIDS_DESTROYED = 0
 
 PLAYER_RADIUS = 20
 PLAYER_TURN_SPEED = 300  # degrees per second
@@ -24,3 +26,8 @@ PLAYER_SHOOT_COOLDOWN = 0.3  # seconds
 
 FONT = "8-bit.ttf"
 FONT_SIZE = 36
+
+POWERUP_COLOR = (255, 215, 0)  # Gold color for power-ups
+POWERUP_RADIUS = 15
+POWERUP_SPAWN_RATE = 5  # seconds
+

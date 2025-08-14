@@ -7,6 +7,7 @@ from asteroids import Asteroids
 from player import Player
 from controller import Controller
 from shoot import Shot
+from powerups import PowerUp, PowerUpSpawns
 
 
 def main():
@@ -42,6 +43,7 @@ def main():
     drawables = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shoot = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
  
 
     # Create Player
@@ -56,7 +58,10 @@ def main():
 
     # Shoot initialization
     Shot.containers = (shoot ,updatables, drawables)
-
+    
+    PowerUp.containers = (powerups, updatables, drawables)
+    PowerUpSpawns.containers = (updatables)
+    powerup = PowerUpSpawns() 
     
     
     
@@ -87,9 +92,9 @@ def main():
         
         # Check for collisions
         for asteroid in asteroids:
-            
             if player.collides_with(asteroid):
                 player.damage()
+                player.triple_shot_timer = 0
                 asteroid.kill()
 
         for asteroid in asteroids:
@@ -98,7 +103,15 @@ def main():
                     asteroid.split()
                     shot.kill()
         
+        for powerup in powerups:
+            if player.collides_with(powerup):
+                powerup.kill()
+                player.triple_shot_timer = 15
+            player.triple_shot_timer -= dt
+
         lives_text = font.render(f"Lives: {constants.PLAYER_LIVES}", True, (255, 255, 255))
+        asteroids_destroyed_text = font.render(f"Asteroids Destroyed: {constants.ASTEROIDS_DESTROYED}", True, (255, 255, 255))
+        screen.blit(asteroids_destroyed_text, (10, 30))
         screen.blit(lives_text, (10, 10))  # Draw lives at the
         pygame.display.flip()
         dt = clock.tick(60) / 1000.0  # Convert milliseconds to 
