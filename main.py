@@ -1,17 +1,21 @@
 import pygame
 import sys
+import constants
 from constants import *
 from asteroidfield import AsteroidField
 from asteroids import Asteroids
 from player import Player
+from controller import Controller
 from shoot import Shot
 
 
 def main():
     pygame.init()
-    
     pygame.joystick.init()  # Initialize joystick support if needed
-
+    pygame.font.init()  # Initialize font module
+    
+    font = pygame.font.Font(FONT, FONT_SIZE)  # Load the font
+    
     # Debug: Print number of joysticks and their names
     joystick_count = pygame.joystick.get_count()
     print(f"Number of joysticks detected: {joystick_count}")
@@ -23,9 +27,10 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()  # Set frame rate to 60 FPS
     dt = 0
+    
 
     # joystick_count = pygame.joystick.get_count()
-    joysticks = []
+    # joysticks = []
     # for i in range(joystick_count):
     #     joystick = pygame.joystick.Joystick(i)
     #     joystick.init()
@@ -37,10 +42,12 @@ def main():
     drawables = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shoot = pygame.sprite.Group()
+ 
 
     # Create Player
     Player.containers = (updatables, drawables)
-    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    controller = Controller()  # Initialize the controller
+    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, controller=controller)
    
    # Create Asteroids
     Asteroids.containers = (asteroids, updatables, drawables)
@@ -49,6 +56,8 @@ def main():
 
     # Shoot initialization
     Shot.containers = (shoot ,updatables, drawables)
+
+    
     
     
 
@@ -58,13 +67,14 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.JOYDEVICEADDED:
-                print("Joystick added")
+                controller.add_joystick(event.device_index)
+                # joy = pygame.joystick.Joystick(event.device_index)
+                # joysticks.append(joy)
             if event.type == pygame.QUIT:
                 return
             
 
         screen.fill((0, 0, 0))
-        #screen.blit(FONT.render(f"Lives: {PLAYER_LIVES}", True, (255, 255, 255)), (10, 10))
         
         # draw all game objects
         for sprite in drawables:
@@ -74,9 +84,10 @@ def main():
         updatables.update(dt)
         player.timer -= dt
 
-
+        
         # Check for collisions
         for asteroid in asteroids:
+            
             if player.collides_with(asteroid):
                 player.damage()
                 asteroid.kill()
@@ -87,9 +98,10 @@ def main():
                     asteroid.split()
                     shot.kill()
         
-        
+        lives_text = font.render(f"Lives: {constants.PLAYER_LIVES}", True, (255, 255, 255))
+        screen.blit(lives_text, (10, 10))  # Draw lives at the
         pygame.display.flip()
-        dt = clock.tick(60) / 1000.0  # Convert milliseconds to seconds
+        dt = clock.tick(60) / 1000.0  # Convert milliseconds to 
 pygame.quit()
 
 

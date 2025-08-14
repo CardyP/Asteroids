@@ -1,5 +1,6 @@
 import pygame
 
+
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
@@ -21,5 +22,5 @@ SHOOT_RADIUS = 5
 PLAYER_SHOOT_SPEED = 500  # pixels per second
 PLAYER_SHOOT_COOLDOWN = 0.3  # seconds
 
-pygame.font.init()
-FONT = pygame.font.Font("8-bit.ttf", 24)
+FONT = "8-bit.ttf"
+FONT_SIZE = 36
