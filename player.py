@@ -12,6 +12,9 @@ class Player(CircleShape):
         self.timer = 0  # Timer for shooting cooldown
         self.controller = controller
         self.triple_shot_timer = 0  # Timer for triple shot duration
+        self.speed_boost_timer = 0  # Timer for speed boost duration
+        self.shield_timer = 0  # Timer for shield duration
+        self.health_timer = 0  # Timer for health regeneration
     # in the player class
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -26,6 +29,19 @@ class Player(CircleShape):
         shot_velocity = forward * constants.PLAYER_SHOOT_SPEED
         return Shot(self.position.x, self.position.y, constants.SHOOT_RADIUS, shot_velocity)
 
+    def get_color(self):   
+        if self.shield_timer > 0:
+            return (0, 0, 255)      # Blue for shield
+        elif self.speed_boost_timer > 0:
+            return (255, 255, 0)    # Yellow for speed
+        elif self.triple_shot_timer > 0:
+            return (255, 165, 0)    # Orange for triple shot
+        elif self.health_timer > 0:
+            return (255, 0, 0)      # Green for health
+        else:
+            return constants.PLAYER_COLOR
+    
+    
     def triple_shot(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         left = pygame.Vector2(0, 1).rotate(self.rotation - 30)
@@ -36,8 +52,23 @@ class Player(CircleShape):
         # Draw three shots in a triangular formation
         return Shot(self.position.x, self.position.y, constants.SHOOT_RADIUS, shot_velocity), Shot(self.position.x + 10, self.position.y + 10, constants.SHOOT_RADIUS, shot_velocity_left), Shot(self.position.x - 10, self.position.y + 10, constants.SHOOT_RADIUS, shot_velocity_right)
     
+    def health_back(self):
+        constants.PLAYER_LIVES += 1
+        print(self.health_timer)
+        if self.health_timer > 0:
+            constants.PLAYER_COLOR = (255, 0, 0)  # Change color
+
+    def speed_boost(self):
+        if self.speed_boost_timer > 0:
+            self.velocity *= 1.5
+
+    def shield(self):
+        if self.shield_timer > 0:
+            constants.PLAYER_COLOR = (0, 0, 255)
+
     def draw(self, screen):
-        pygame.draw.polygon(screen, constants.PLAYER_COLOR, self.triangle())    
+        color = self.get_color()
+        pygame.draw.polygon(screen, color, self.triangle())    
 
     def rotate(self, dt):
         self.rotation += constants.PLAYER_TURN_SPEED * dt

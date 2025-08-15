@@ -2,19 +2,27 @@ import pygame
 import random
 from constants import *
 from circleshape import CircleShape
+from asteroidfield import AsteroidField
 
 class PowerUp(CircleShape):
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, powerup_type):
         super().__init__(x, y, radius)
-        
+        self.type = powerup_type
     def draw(self, screen):
-        pygame.draw.circle(screen, POWERUP_COLOR, self.position, POWERUP_RADIUS, 2)  # Draw the power-up as a filled circle
+        color_map = {
+            "triple": (255, 165, 0),   # Orange
+            "speed": (255, 255, 0),      # Yellow
+            "shield": (0, 0, 255),   # Blue
+            "health": (255, 0, 0),     # Red
+        }
+        color = color_map.get(self.type, (255, 255, 255))
+        pygame.draw.circle(screen, color, self.position, POWERUP_RADIUS, 2)
     
     def update(self, dt):
         self.position += self.velocity * dt
 
     
-class PowerUpSpawns(pygame.sprite.Sprite):
+class PowerUpSpawns(AsteroidField):
     edges = [
         [
             pygame.Vector2(1, 0),
@@ -43,9 +51,11 @@ class PowerUpSpawns(pygame.sprite.Sprite):
         self.spawn_timer = 0.0
 
     def spawn(self, radius, position, velocity):
-        powerup = PowerUp(position.x, position.y, radius)
+        powerup_types = ["triple", "speed", "shield", "health"]
+        chosen_type = random.choice(powerup_types)
+        powerup = PowerUp(position.x, position.y, radius, chosen_type)
         powerup.velocity = velocity
-
+        
     def update(self, dt):
         self.spawn_timer += dt
         if self.spawn_timer > POWERUP_SPAWN_RATE:

@@ -29,5 +29,5 @@ FONT_SIZE = 36
 
 POWERUP_COLOR = (255, 215, 0)  # Gold color for power-ups
 POWERUP_RADIUS = 15
-POWERUP_SPAWN_RATE = 5  # seconds
+POWERUP_SPAWN_RATE = random.uniform(15, 20)  # seconds
 

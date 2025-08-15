@@ -8,6 +8,7 @@ from player import Player
 from controller import Controller
 from shoot import Shot
 from powerups import PowerUp, PowerUpSpawns
+from powerups import *
 
 
 def main():
@@ -73,8 +74,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.JOYDEVICEADDED:
                 controller.add_joystick(event.device_index)
-                # joy = pygame.joystick.Joystick(event.device_index)
-                # joysticks.append(joy)
             if event.type == pygame.QUIT:
                 return
             
@@ -91,23 +90,43 @@ def main():
 
         
         # Check for collisions
-        for asteroid in asteroids:
-            if player.collides_with(asteroid):
-                player.damage()
-                player.triple_shot_timer = 0
-                asteroid.kill()
+        if player.shield_timer > 0:
+            for asteroid in asteroids:
+                if player.collides_with(asteroid):
+                    asteroid.kill()
+        else:
+            for asteroid in asteroids:
+                if player.collides_with(asteroid):
+                    player.damage()
+                    player.triple_shot_timer = 0
+                    asteroid.kill()
 
         for asteroid in asteroids:
             for shot in shoot:
                 if shot.collides_with(asteroid):
                     asteroid.split()
                     shot.kill()
+        if player.triple_shot_timer > 0 or player.speed_boost_timer > 0 or player.shield_timer > 0:
+            None
+        else: 
+            for powerup in powerups:
+                if player.collides_with(powerup):
+                    if powerup.type == "triple":
+                        player.triple_shot_timer = 5
+                    elif powerup.type == "speed":
+                        player.speed_boost()
+                        player.speed_boost_timer = 5
+                    elif powerup.type == "shield":
+                        player.shield_timer = 5
+                    elif powerup.type == "health":
+                        player.health_back()
+                        player.health_timer = 0.5
+                    powerup.kill()
         
-        for powerup in powerups:
-            if player.collides_with(powerup):
-                powerup.kill()
-                player.triple_shot_timer = 15
-            player.triple_shot_timer -= dt
+        player.triple_shot_timer -= dt
+        player.speed_boost_timer -= dt
+        player.shield_timer -= dt
+        player.health_timer -= dt
 
         lives_text = font.render(f"Lives: {constants.PLAYER_LIVES}", True, (255, 255, 255))
         asteroids_destroyed_text = font.render(f"Asteroids Destroyed: {constants.ASTEROIDS_DESTROYED}", True, (255, 255, 255))
