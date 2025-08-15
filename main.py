@@ -110,19 +110,20 @@ def main():
             None
         else: 
             for powerup in powerups:
-                if player.collides_with(powerup):
-                    if powerup.type == "triple":
-                        player.triple_shot_timer = 5
-                    elif powerup.type == "speed":
-                        player.speed_boost()
-                        player.speed_boost_timer = 5
-                    elif powerup.type == "shield":
-                        player.shield_timer = 5
-                    elif powerup.type == "health":
-                        player.health_back()
-                        player.health_timer = 0.5
-                    powerup.kill()
-        
+                for shot in shoot:
+                    if player.collides_with(powerup) or shot.collides_with(powerup):
+                        if powerup.type == "triple":
+                            player.triple_shot_timer = 5
+                        elif powerup.type == "speed":
+                            player.speed_boost()
+                            player.speed_boost_timer = 5
+                        elif powerup.type == "shield":
+                            player.shield_timer = 5
+                        elif powerup.type == "health":
+                            player.health_back()
+                            player.health_timer = 0.5
+                        powerup.kill()
+            
         player.triple_shot_timer -= dt
         player.speed_boost_timer -= dt
         player.shield_timer -= dt
